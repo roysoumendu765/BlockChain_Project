@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import feedbackList from '../feedbackList/feedbackList';
+import searchFeedback from '../searchFeedback/searchFeedback';
 import './Main.css';
 
 const Main = () => {
+  const [value, setValue] = useState('');
   return (
-    <div>Main</div>
+    <div>
+      <searchFeedback setValue={setValue}/>
+      <feedbackList value={value}/>
+    </div>
   )
 }
 
