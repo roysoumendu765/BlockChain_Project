@@ -1,15 +1,15 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import SearchIcon from '@mui/icons-material/Search';
-import './searchFeedback.css';
+import './Searchfeedback.css';
 
-const searchFeedback = ({setValue}) => {
+const Searchfeedback = ({setValue}) => {
   return (
     <>
         <Form>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Search</Form.Label>
-                <Form.Control type="search" placeholder="search items" onChange={() => setValue(e.target.value)}/>
+                <Form.Control type="search" placeholder="search items" onChange={(e) => setValue(e.target.value)}/>
             </Form.Group>
             <Button variant="primary" type="submit">
                 <SearchIcon />
@@ -19,4 +19,4 @@ const searchFeedback = ({setValue}) => {
   )
 }
 
-export default searchFeedback
+export default Searchfeedback;

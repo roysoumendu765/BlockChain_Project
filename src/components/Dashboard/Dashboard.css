@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.main-dashboard{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+button {
+    border-radius: 10px;
+    margin: 0 10px;
+    border: none;
+    padding: 5px;
+}
+.btn-0{
+    background-color:rgb(91, 178, 225);
+}
+.btn-0:hover{
+    box-shadow: 0 0 10px rgb(91, 178, 225);
+}
+.btn-1{
+    background-color:rgb(35, 227, 35);
+}
+.btn-1:hover{
+    box-shadow: 0 0 10px rgb(35, 227, 35);
+}
+.btn-2{
+    background-color: rgb(192, 189, 189);
+}
+.btn-2:hover{
+    box-shadow: 0 0 10px rgb(192, 189, 189);
+}
+.btn-3{
+    background-color: rgb(245, 8, 8);
+}
+.btn-3:hover{
+    box-shadow: 0 0 10px rgb(245, 8, 8);
+}

@@ -1,8 +1,8 @@
 import React from 'react';
-import './feedbackList.css';
+import './FeedbackList.css';
 
-const feedbackList = ({value}) => {
-    const feedbackList = [
+const FeedbackList = ({value}) => {
+    const feedback = [
         {
             id: 1,
             type: "generic",
@@ -30,17 +30,25 @@ const feedbackList = ({value}) => {
         }
     ];
     return (
-        <>
-            {feedbackList.filter((val) => feedbackList.type.includes(value)).map((val) => {
+        <div className='main-feedbacklist'>
+            <h3>FeedBack List</h3>
+            {(value !== "") ? feedback.filter((val) => feedback.type.includes(value ? value : "")).map((val) => {
                 return(
                     <div key={val.id}>
                         <h3>{val.type}</h3>
                         <p>{val.description}</p>
                     </div>
                 )
+            }) : feedback.map((val) => {
+                return (
+                    <div key={val.id}>
+                        <h3>{val.type}</h3>
+                        <p>{val.description}</p>
+                    </div>
+                )
             })}
-        </>
+        </div>
     )
 }
 
-export default feedbackList
+export default FeedbackList;
