@@ -13,7 +13,7 @@ const App = () => {
   return (
     <Router>
       <Header />
-      <div className="container mt-5">
+      <div className="mt-5">
         <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
