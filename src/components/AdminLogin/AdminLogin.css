@@ -1,0 +1,40 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.adminlogin-container {
+    width: 100%;
+    height: 100vh !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-image: url('./adminlogin_main.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.inner-wrapper {
+    background: #9488e6;
+    padding: 10px;
+    border-radius: 5px;
+    width: 400px;
+    height: 300px;
+}
+button.btn-submit {
+    width: 100%;
+    font-size: 20px;
+    font-weight: 600;
+    background: #000;
+}
+button.btn-submit:hover {
+    color: #000;
+    background-color: #e5e5e5;
+}
+h3.adminlogin-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 100%;
+}

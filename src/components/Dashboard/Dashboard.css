@@ -5,7 +5,7 @@
 }
 .main-wrapper{
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -19,14 +19,22 @@ h1.main-heading {
     display: flex;
     flex-direction: row;
 }
-.sidebar{
+.sidebar {
     width: 20%;
+    margin-top: 5px;
+    margin-right: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     background-color: blueviolet;
-    display: flex ;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 .main-dashboard{
     width: 60%;
-    height: 100vh;
+    height: 100%;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -67,14 +75,19 @@ button {
     height: 300px;
     background-color: antiquewhite;
     display: flex;
+    border-radius: 5px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 .profile-name {
-    width: 100%;
-    /* margin-left: 75px; */
-    justify-content: start;
+    width: 60%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 0 !important;
+    justify-content: center;
     display: flex;
     align-items: center;
 }
@@ -90,17 +103,178 @@ button {
 .right-pane {
     padding: 5px;
     display: flex;
-    align-items: end;
+    align-items: center;
     margin-right: 25px;
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     height: inherit;
-    width: 50%;
+    width: 40%;
     pointer-events: none !important;
 }
 .profile-pic {
     background: grey;
-    height: 200px;
-    width: 200px;
+    height: 11rem;
+    width: 11rem;
     border-radius: 50%;
 }
+.rating-vals {
+    line-height: 0.75em;
+    margin-top: 1.5em;
+    margin-right: 1.5em;
+}
+.side-cards {
+    padding: 5px;
+    padding-top: 0px;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+}
+.card {
+    margin-bottom: 10px;
+    height: 10rem;
+}
+ul.list-parent {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    line-height: 3.5em;
+    list-style: none;
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+}
+li.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+}
+li.list-item:hover, li.list-item:visited {
+    color: black;
+}
+button.btn-black {
+    color: white;
+    width: 80%;
+    margin: 10px;
+    padding: 5px;
+    background: black;
+}
+button.btn-black:hover{
+    color: black;
+    background-color: white;
+}
+li span:first-of-type {
+    transform: scale(1.5);
+}
+li span:last-of-type {
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+/* Settings Section */
+.settings {
+    height: inherit;
+    margin-top: 5px;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: flex-start;
+    align-items: start;
+    background: #0f0d0d;
+}
+h1.heading-settings {
+    padding: 10px;
+    color: #ffff;
+}
+
+/* Reviews Section */
+.reviews {
+    height: inherit;
+    margin-top: 5px;
+    border-radius: 5px;
+    padding: 5px;
+    justify-content: flex-start;
+    align-items: start;
+    background: #e1e1e5;
+}
+.reviews-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border-radius: 5px;
+    background: #9ec5c5;
+    margin: 5px auto;
+}
+.reviews-list-top, .reviews-list-bottom {
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+.list-top-right:hover{
+    color: red;
+}
+
+.switch {
+    color: #fff;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }

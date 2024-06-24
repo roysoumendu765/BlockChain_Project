@@ -1,0 +1,46 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.heading-admin-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+}
+.data-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card {
+    width: 15rem !important;
+    height: 15rem;
+    padding: 5px;
+    margin: 10px;
+    box-shadow: 0 0 10px;
+}
+button.post-btn {
+    height: 3rem;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background: black;
+    width: 11.5rem;
+}
+button.post-btn:hover{
+    color: white;
+    opacity: 0.75;
+}
+.modal-container {
+    display: block;
+    position: absolute;
+    transform: translate(85%, 5%);
+    background: black;
+    border-radius: 5px;
+    width: 30rem;
+    z-index: 10000;
+    height: 32rem;
+}
