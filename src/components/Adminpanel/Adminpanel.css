@@ -35,12 +35,38 @@ button.post-btn:hover{
     opacity: 0.75;
 }
 .modal-container {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     transform: translate(85%, 5%);
     background: black;
     border-radius: 5px;
     width: 30rem;
     z-index: 10000;
-    height: 32rem;
+    height: 33rem;
+    pointer-events: all !important;
+}
+.clear-btn {
+    width: 100%;
+    padding: 2px;
+    align-items: center;
+    justify-content: end;
+    display: flex;
+    color: white;
+}
+.form-main-container {
+    height: 90%;
+    border-radius: 5px;
+    width: 90%;
+    background: #fff;
+}
+.backdropclass{
+    backface-visibility: hidden;
+    background-color: rgba(92, 83, 83, 0.5);
+    height: 100vh;
+    width: 100%;
+    pointer-events: none;
+    z-index: 100;
 }

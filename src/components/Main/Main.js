@@ -6,9 +6,10 @@ import './Main.css';
 const Main = () => {
   const [value, setValue] = useState('');
   return (
-    <div>
-      <Searchfeedback setValue={setValue}/>
-      <FeedbackList value={value}/>
+    <div className='mainpage-container'>
+      Main Page
+      {/* <Searchfeedback setValue={setValue}/>
+      <FeedbackList value={value}/> */}
     </div>
   )
 }
