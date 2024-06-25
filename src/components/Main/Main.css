@@ -1,15 +1,56 @@
-*{
+/* Main.css */
+
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-.mainpage-container{
-    height: 100%;
-    width: 100%;
+
+.mainpage-container {
     display: flex;
-    background-color: black;
-    color: white;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+}
+
+.mainpage-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.search-section {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.feedback-section {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Adding some additional styling for the search and feedback components */
+
+.search-section input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.feedback-section .feedback-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.feedback-section .feedback-item:hover {
+    background-color: #f9f9f9;
 }
