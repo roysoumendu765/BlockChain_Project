@@ -10,10 +10,10 @@ const Main = () => {
       Main Page
       <h1 className="mainpage-title">Main Page</h1>
       <div className="search-section">
-        <SearchFeedback setValue={setValue} />
+        {/* <SearchFeedback setValue={setValue} /> */}
       </div>
       <div className="feedback-section">
-        <FeedbackList value={value} />
+        {/* <FeedbackList value={value} /> */}
       </div>
       {/* <Searchfeedback setValue={setValue}/>
       <FeedbackList value={value}/> */}
