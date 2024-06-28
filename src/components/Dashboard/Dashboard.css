@@ -18,6 +18,7 @@ h1.main-heading {
 .inner-wrapper-dashboard{
     display: flex;
     flex-direction: row;
+    margin-bottom: 5px;
 }
 .sidebar {
     width: 20%;

@@ -8,14 +8,27 @@ import { Settings } from '@mui/icons-material';
 import { Delete } from '@mui/icons-material';
 import { CheckBoxOutlineBlank } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router';
+import FeedBackManagement from '../../contracts/FeedManagement.json';
+import getWeb3 from '../../web3js/web3';
 import Swal from 'sweetalert2';
 
 const Dashboard = () => {
-  const {state} = useLocation();
-  const Logindata = state && state.data;
-  console.log(Logindata);
-  
+  const location = useLocation();
+  const { data } = location.state || {}; 
+  console.log(data);
+  // const [password, name, username] = data;
+
+  const [availabledata, setAvailableData] = useState([]);
+  const [incomingdata, setIncomingData] = useState([]);
+  const [expireddata, setExpiredData] = useState([]);
+  const [attempeddata, setAttempedData] = useState([]);
   const [rating, setRating] = useState(3);
+  
+  const availableArr = [];
+  const incomingArr = [];
+  const expiredArr = [];
+  const attemptedArr = [];
+
   const [status, setStatus] = useState({
     isHome: true,
     isSettings: false,
@@ -25,9 +38,80 @@ const Dashboard = () => {
   const [toggle, setToggle] = useState({
     isDark: false,
     isLocked: false
-  })
+  });
 
   const navigate = useNavigate();
+
+  const getNumberOfDays = (givenDate) => {
+    const today = new Date();
+    const dateToCompare = new Date(givenDate);
+    const differenceMs = today - dateToCompare;
+    const daysDifference = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+    return daysDifference;
+  }
+
+  useEffect(async () => {
+    try {
+      console.log("Getting Web3 instance...");
+      const web3 = await getWeb3();
+      console.log("Web3 instance obtained:", web3);
+
+      if (!window.ethereum) {
+        throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+      }
+
+      console.log("Requesting MetaMask account access...");
+      await window.ethereum.enable();
+
+      const accounts = await web3.eth.getAccounts();
+      console.log("Accounts obtained:", accounts);
+
+      if (accounts.length === 0) {
+        throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+      }
+
+      const contract = new web3.eth.Contract(
+        FeedBackManagement.abi,
+        FeedBackManagement.contractAddress
+      );
+      console.log("Contract instance obtained:", contract);
+
+      const responseSize = await contract.methods.getfeedbackdatacount().call({from: accounts[0], gas: 3000000});
+      console.log(responseSize);
+      const response = await contract.methods.getAllfeedbacks().call({from: accounts[0], gas: 3000000});
+      console.log(response);
+
+      for(let i = 0; i < responseSize; i++){
+        const daydifference = getNumberOfDays(response[i].datestr);
+        if(daydifference >= 0 && daydifference < 7){
+          availableArr.push(response[i])
+        } else if(daydifference >= 7){
+          incomingArr.push(response[i]);
+        } else if(daydifference < 0){
+          expiredArr.push(response[i]);
+        }
+      }
+
+      const attempedResponseSize = await contract.methods.getReviewsDataLength(data[2]).call({from: accounts[0], gas: 3000000});
+      console.log(responseSize);
+      const attemptedResponse = await contract.methods.getAllReviwsData(data[2]).call({from: accounts[0], gas: 3000000});
+
+      for(let i = 0; i < attempedResponseSize; i++){
+        attemptedArr.push(attemptedResponse[i]);
+      }
+
+    setAvailableData(availableArr);
+    setIncomingData(incomingArr);
+    setExpiredData(expiredArr);
+    setAttempedData(attemptedArr);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.message}`,
+      });
+    }
+  }, []);
 
   const ratingNum = [1, 2, 3, 4, 5];
   const togglestatus = [1, 2];
@@ -87,7 +171,7 @@ const Dashboard = () => {
     }
   ]
 
-  const [reviewStatus, setReviewStatus] = useState(reviewDetials);
+  const [reviewStatus, setReviewStatus] = useState([]);
 
   const changeRating = () => {
 
@@ -112,10 +196,50 @@ const Dashboard = () => {
     );
   }
 
-  const handleOnReviews = () => {
+  const handleOnReviews = async () => {
     setStatus(prevState =>
       ({ ...prevState, isHome: false, isSettings: false, isReviews: true })
     );
+    try {
+      console.log("Getting Web3 instance...");
+      const web3 = await getWeb3();
+      console.log("Web3 instance obtained:", web3);
+
+      if (!window.ethereum) {
+        throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+      }
+
+      console.log("Requesting MetaMask account access...");
+      await window.ethereum.enable();
+
+      const accounts = await web3.eth.getAccounts();
+      console.log("Accounts obtained:", accounts);
+
+      if (accounts.length === 0) {
+        throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+      }
+
+      const contract = new web3.eth.Contract(
+        FeedBackManagement.abi,
+        FeedBackManagement.contractAddress
+      );
+      console.log("Contract instance obtained:", contract);
+
+      const responseSize = await contract.methods.getReviewsDataLength(data[2]).call({from: accounts[0], gas: 3000000});
+      console.log(responseSize);
+      const response = await contract.methods.getAllReviwsData(data[2]).call({from: accounts[0], gas: 3000000});
+      console.log(response);
+      
+      const tempdata = [];
+
+      for(let i = 0; i < responseSize; i++){
+        tempdata.push(response[i]);
+      }
+
+      setReviewStatus(tempdata)
+    } catch (error) {
+       console.log(error.message);
+    }
   }
 
   const handleOnSettings = () => {
@@ -127,6 +251,20 @@ const Dashboard = () => {
   const handledeleteReviews = (index) => {
     const newList = reviewStatus.filter((_, i) => i !== index);
     setReviewStatus(newList);
+  }
+
+  const handleTabAttemped = () => {
+    console.log("Clicked Attemped!")
+  }
+
+  const handleTabAvailable = () => {
+    console.log("Clicked Available!")
+  }
+  const handleTabIncoming = () => {
+    console.log("Clicked Incoming!")
+  }
+  const handleTabExpired = () => {
+    console.log("Clicked Expired!")
   }
 
   return (
@@ -194,30 +332,130 @@ const Dashboard = () => {
             <div className='tab-panel'>
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">AVAILABLE</button>
+                  <button className="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" onClick={handleTabAvailable}>AVAILABLE</button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">INCOMING</button>
+                  <button className="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false" onClick={handleTabIncoming}>INCOMING</button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">ATTEMPTED</button>
+                  <button className="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false" onClick={handleTabAttemped}>ATTEMPTED</button>
                 </li>
                 <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired" type="button" role="tab" aria-controls="expired" aria-selected="false">EXPIRED</button>
+                  <button className="nav-link" id="expired-tab" data-bs-toggle="tab" data-bs-target="#expired" type="button" role="tab" aria-controls="expired" aria-selected="false" onClick={handleTabExpired}>EXPIRED</button>
                 </li>
               </ul>
               <div className="tab-content" id="myTabContent">
                 <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  {
+                    availabledata.map((val, index) => {
+                      <div key={index}>
+
+                      </div> 
+                    })
+                  }
                 </div>
                 <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  {incomingdata.map((val, index) => {
+                    return (
+                      <div className="downtab-list" key={index}>
+                      <div className="downtab-list-top">
+                        <div className='downtab-list-top-left'>
+                        <span>Dated: </span>
+                        <span><b>{val.datestr}</b></span>
+                        </div>
+                        <div className='downtab-list-top-right'>
+                          Incoming
+                        </div>
+                      </div>
+                      <div className="downtab-list-bottom">
+                        <div className='downtab-list-bottom-left'>
+                          <p>{val.question}</p>
+                        </div>
+                        <div className='downtab-list-bottom-right'>
+                        <StarRatings
+                          className='reviews-ratings'
+                          rating={0}
+                          starRatedColor="yellow"
+                          numberOfStars={5}
+                          starDimension="20px"
+                          starSpacing="6px"
+                          name='rate'
+                        />
+                        </div>
+                      </div>
+                    </div>
+                    )
+                  })}
                 </div>
                 <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  {
+                    attempeddata.map((val, index) => {
+                      return(
+                        <div className="downtab-list" key={index}>
+                        <div className="downtab-list-top">
+                          <div className='downtab-list-top-left'>
+                          <span>Dated: </span>
+                          <span><b>{val.datestr}</b></span>
+                          </div>
+                          <div className='downtab-list-top-right'>
+                           Attempted
+                          </div>
+                        </div>
+                        <div className="downtab-list-bottom">
+                          <div className='downtab-list-bottom-left'>
+                            <p>{val.question}</p>
+                          </div>
+                          <div className='downtab-list-bottom-right'>
+                          <StarRatings
+                            className='reviews-ratings'
+                            rating={0}
+                            starRatedColor="yellow"
+                            numberOfStars={5}
+                            starDimension="20px"
+                            starSpacing="6px"
+                            name='rate'
+                          />
+                          </div>
+                        </div>
+                      </div>
+                      )
+                    })
+                  }
                 </div>
                 <div className="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                  {
+                    expireddata.map((val, index) => {
+                      return(
+                        <div className="downtab-list" key={index}>
+                          <div className="downtab-list-top">
+                            <div className='downtab-list-top-left'>
+                            <span>Dated: </span>
+                            <span><b>{val.datestr}</b></span>
+                            </div>
+                            <div className='downtab-list-top-right'>
+                              Expired
+                            </div>
+                          </div>
+                          <div className="downtab-list-bottom">
+                            <div className='downtab-list-bottom-left'>
+                              <p>{val.question}</p>
+                            </div>
+                            <div className='downtab-list-bottom-right'>
+                            <StarRatings
+                              className='reviews-ratings'
+                              rating={0}
+                              starRatedColor="yellow"
+                              numberOfStars={5}
+                              starDimension="20px"
+                              starSpacing="6px"
+                              name='rate'
+                            />
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
                 </div>
               </div>
             </div>
@@ -227,11 +465,11 @@ const Dashboard = () => {
                 {
                   reviewStatus.map((items, index) => {
                     return (
-                      <div className='reviews-list' key={items.id}>
+                      <div className='reviews-list' key={index}>
                         <div className='reviews-list-top'>
                           <div className='list-top-left'>
                             <span>Dated: </span>
-                            <span>{items.reviewDate}</span>
+                            <span><b>{items.param2}</b></span>
                           </div>
                           <div className='list-top-right' onClick={() => handledeleteReviews(index)}>
                             <Delete />
@@ -239,12 +477,12 @@ const Dashboard = () => {
                         </div>
                         <div className='reviews-list-bottom'>
                           <div className='list-bottom-left'>
-                            <p>{items.reviewItem}</p>
+                            <p>{items.param1}</p>
                           </div>
                           <div className='list-bottom-right'>
                             <StarRatings
                               className='reviews-ratings'
-                              rating={items.rated}
+                              rating={parseInt(items.param3)}
                               starRatedColor="yellow"
                               numberOfStars={5}
                               starDimension="20px"

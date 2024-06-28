@@ -116,6 +116,7 @@ const Login = () => {
       const result = await contract.methods.getPassword(String(email)).call({from: accounts[0], gas: 3000000});
       console.log(result);
       if (result && result[0] && result[0] !== "") {
+        const response = result;
         console.log("called1");
         if (password === result[0]) {
           console.log("called2");
@@ -125,7 +126,7 @@ const Login = () => {
             confirmButtonText: "OK",
           }).then((result) => {
             if (result.isConfirmed) {
-              navigate('/dashboard', { state: { data: result[1] } });
+              navigate('/dashboard', {state: {data: response}});
             }
           });
         }
