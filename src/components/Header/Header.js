@@ -16,10 +16,6 @@ const Header = () => {
     setDisplay(path === "/adminpanel")
   },[path]);
 
-  console.log(location);
-  console.log(display);
-  console.log(path);
-
   const handleAdminLogout = () => {
     setDisplay(false);
     navigate('/');

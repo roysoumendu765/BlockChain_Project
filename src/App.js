@@ -10,6 +10,7 @@ import FeedbackList from './components/FeedbackList/FeedbackList';
 import AdminLogin from "./components/AdminLogin/AdminLogin";
 import Adminpanel from "./components/Adminpanel/Adminpanel";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/adminpanel" element={<Adminpanel />} />
         <Route path="/listfeedback" element={<FeedbackList value=""/>} />
         <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>

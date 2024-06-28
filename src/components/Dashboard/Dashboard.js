@@ -7,10 +7,14 @@ import { Reviews } from '@mui/icons-material';
 import { Settings } from '@mui/icons-material';
 import { Delete } from '@mui/icons-material';
 import { CheckBoxOutlineBlank } from '@mui/icons-material';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 
 const Dashboard = () => {
+  const {state} = useLocation();
+  const Logindata = state && state.data;
+  console.log(Logindata);
+  
   const [rating, setRating] = useState(3);
   const [status, setStatus] = useState({
     isHome: true,
@@ -128,7 +132,7 @@ const Dashboard = () => {
   return (
     <div className='main-wrapper'>
       <h1 className='main-heading'>{(status.isHome === true) ? 'DashBoard' : (status.isReviews === true) ? 'Reviews' : 'Settings'}</h1>
-      <div className='inner-wrapper'>
+      <div className='inner-wrapper-dashboard'>
         <div className='sidebar'>
           <ul className='list-parent'>
             <li className='list-item' onClick={handleOnHome}>
