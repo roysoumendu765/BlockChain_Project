@@ -113,8 +113,7 @@ const Login = () => {
       );
       console.log("Contract instance obtained:", contract);
 
-      const username = email;
-      const result = await contract.methods.getPassword(String(username)).call({from: accounts[0], gas: 3000000});
+      const result = await contract.methods.getPassword(String(email)).call({from: accounts[0], gas: 3000000});
       console.log(result);
       if (result && result[0] && result[0] !== "") {
         console.log("called1");
