@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import SearchIcon from '@mui/icons-material/Search';
-import './Searchfeedback.css';
+import './SearchFeedback.css';
 
 const Searchfeedback = ({setValue}) => {
   return (
