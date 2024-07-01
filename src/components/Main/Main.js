@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import FeedbackList from "../FeedbackList/FeedbackList";
-import Searchfeedback from "../Searchfeedback/Searchfeedback";
+import FeedbackList from "../feedbackList/FeedbackList";
+import Searchfeedback from "../SearchFeedback/SearchFeedback";
 import "./Main.css";
 
 const Main = () => {
