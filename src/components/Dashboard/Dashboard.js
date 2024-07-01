@@ -6,24 +6,24 @@ import { Home } from '@mui/icons-material';
 import { Reviews } from '@mui/icons-material';
 import { Settings } from '@mui/icons-material';
 import { Delete } from '@mui/icons-material';
+import Button from 'react-bootstrap/Button';
 import { CheckBoxOutlineBlank } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router';
 import FeedBackManagement from '../../contracts/FeedManagement.json';
 import getWeb3 from '../../web3js/web3';
 import Swal from 'sweetalert2';
+import bigInt from 'big-integer';
 
 const Dashboard = () => {
   const location = useLocation();
-  const { data } = location.state || {}; 
-  console.log(data);
-  // const [password, name, username] = data;
+  const { data } = location.state || {};
 
   const [availabledata, setAvailableData] = useState([]);
   const [incomingdata, setIncomingData] = useState([]);
   const [expireddata, setExpiredData] = useState([]);
   const [attempeddata, setAttempedData] = useState([]);
   const [rating, setRating] = useState(3);
-  
+
   const availableArr = [];
   const incomingArr = [];
   const expiredArr = [];
@@ -50,66 +50,59 @@ const Dashboard = () => {
     return daysDifference;
   }
 
-  useEffect(async () => {
-    try {
-      console.log("Getting Web3 instance...");
-      const web3 = await getWeb3();
-      console.log("Web3 instance obtained:", web3);
+  useEffect(() => {
 
-      if (!window.ethereum) {
-        throw new Error("MetaMask is not installed. Please install it to use this dApp.");
-      }
-
-      console.log("Requesting MetaMask account access...");
-      await window.ethereum.enable();
-
-      const accounts = await web3.eth.getAccounts();
-      console.log("Accounts obtained:", accounts);
-
-      if (accounts.length === 0) {
-        throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
-      }
-
-      const contract = new web3.eth.Contract(
-        FeedBackManagement.abi,
-        FeedBackManagement.contractAddress
-      );
-      console.log("Contract instance obtained:", contract);
-
-      const responseSize = await contract.methods.getfeedbackdatacount().call({from: accounts[0], gas: 3000000});
-      console.log(responseSize);
-      const response = await contract.methods.getAllfeedbacks().call({from: accounts[0], gas: 3000000});
-      console.log(response);
-
-      for(let i = 0; i < responseSize; i++){
-        const daydifference = getNumberOfDays(response[i].datestr);
-        if(daydifference >= 0 && daydifference < 7){
-          availableArr.push(response[i])
-        } else if(daydifference >= 7){
-          incomingArr.push(response[i]);
-        } else if(daydifference < 0){
-          expiredArr.push(response[i]);
+    return async () => {
+      try {
+        const web3 = await getWeb3();
+        if (!window.ethereum) {
+          throw new Error("MetaMask is not installed. Please install it to use this dApp.");
         }
+        await window.ethereum.enable();
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length === 0) {
+          throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+        }
+        const contract = new web3.eth.Contract(
+          FeedBackManagement.abi,
+          FeedBackManagement.contractAddress
+        );
+
+        const responseSize = await contract.methods.getfeedbackdatacount().call({ from: accounts[0], gas: 3000000 });
+        console.log(responseSize);
+        const response = await contract.methods.getAllfeedbacks().call({ from: accounts[0], gas: 3000000 });
+        console.log(response);
+
+        for (let i = 0; i < responseSize; i++) {
+          const daydifference = getNumberOfDays(response[i].datestr);
+          if (daydifference >= 0 && daydifference < 7) {
+            availableArr.push(response[i])
+          } else if (daydifference >= 7) {
+            incomingArr.push(response[i]);
+          } else if (daydifference < 0) {
+            expiredArr.push(response[i]);
+          }
+        }
+
+        const attempedResponseSize = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
+        console.log(responseSize);
+        const attemptedResponse = await contract.methods.getAllReviwsData(data[2]).call({ from: accounts[0], gas: 3000000 });
+
+        for (let i = 0; i < attempedResponseSize; i++) {
+          attemptedArr.push(attemptedResponse[i]);
+        }
+
+        setAvailableData(availableArr);
+        setIncomingData(incomingArr);
+        setExpiredData(expiredArr);
+        setAttempedData(attemptedArr);
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `${error.message}`,
+        });
       }
-
-      const attempedResponseSize = await contract.methods.getReviewsDataLength(data[2]).call({from: accounts[0], gas: 3000000});
-      console.log(responseSize);
-      const attemptedResponse = await contract.methods.getAllReviwsData(data[2]).call({from: accounts[0], gas: 3000000});
-
-      for(let i = 0; i < attempedResponseSize; i++){
-        attemptedArr.push(attemptedResponse[i]);
-      }
-
-    setAvailableData(availableArr);
-    setIncomingData(incomingArr);
-    setExpiredData(expiredArr);
-    setAttempedData(attemptedArr);
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: `${error.message}`,
-      });
     }
   }, []);
 
@@ -138,39 +131,6 @@ const Dashboard = () => {
     },
   ];
 
-  const reviewDetials = [
-    {
-      id: 1,
-      reviewDate: '10-02-2023',
-      reviewItem: 'Review Item 1',
-      rated: 4
-    },
-    {
-      id: 2,
-      reviewDate: '12-04-2023',
-      reviewItem: 'Review Item 2',
-      rated: 3
-    },
-    {
-      id: 3,
-      reviewDate: '10-06-2023',
-      reviewItem: 'Review Item 3',
-      rated: 5
-    },
-    {
-      id: 4,
-      reviewDate: '20-07-2023',
-      reviewItem: 'Review Item 4',
-      rated: 5
-    },
-    {
-      id: 5,
-      reviewDate: '25-11-2023',
-      reviewItem: 'Review Item 5',
-      rated: 4
-    }
-  ]
-
   const [reviewStatus, setReviewStatus] = useState([]);
 
   const changeRating = () => {
@@ -178,10 +138,10 @@ const Dashboard = () => {
   }
 
   const handleOntoggle = (e, value) => {
-    if(value === 'mode'){
-      setToggle(prevState => ({...prevState, isDark: e.target.checked}));
-    } else if(value === 'lock') {
-      setToggle(prevState => ({...prevState, isLocked: e.target.checked}));
+    if (value === 'mode') {
+      setToggle(prevState => ({ ...prevState, isDark: e.target.checked }));
+    } else if (value === 'lock') {
+      setToggle(prevState => ({ ...prevState, isLocked: e.target.checked }));
     }
     console.log(toggle);
   }
@@ -201,44 +161,35 @@ const Dashboard = () => {
       ({ ...prevState, isHome: false, isSettings: false, isReviews: true })
     );
     try {
-      console.log("Getting Web3 instance...");
       const web3 = await getWeb3();
-      console.log("Web3 instance obtained:", web3);
-
       if (!window.ethereum) {
         throw new Error("MetaMask is not installed. Please install it to use this dApp.");
       }
-
-      console.log("Requesting MetaMask account access...");
       await window.ethereum.enable();
-
       const accounts = await web3.eth.getAccounts();
-      console.log("Accounts obtained:", accounts);
-
       if (accounts.length === 0) {
         throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
       }
-
       const contract = new web3.eth.Contract(
         FeedBackManagement.abi,
         FeedBackManagement.contractAddress
       );
-      console.log("Contract instance obtained:", contract);
 
-      const responseSize = await contract.methods.getReviewsDataLength(data[2]).call({from: accounts[0], gas: 3000000});
+      const responseSize = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
       console.log(responseSize);
-      const response = await contract.methods.getAllReviwsData(data[2]).call({from: accounts[0], gas: 3000000});
+      const response = await contract.methods.getAllReviwsData(data[2]).call({ from: accounts[0], gas: 3000000 });
       console.log(response);
-      
+
       const tempdata = [];
 
-      for(let i = 0; i < responseSize; i++){
+      for (let i = 0; i < responseSize; i++) {
         tempdata.push(response[i]);
       }
 
+      console.log(tempdata);
       setReviewStatus(tempdata)
     } catch (error) {
-       console.log(error.message);
+      console.log(error.message);
     }
   }
 
@@ -248,9 +199,46 @@ const Dashboard = () => {
     );
   }
 
-  const handledeleteReviews = (index) => {
-    const newList = reviewStatus.filter((_, i) => i !== index);
-    setReviewStatus(newList);
+  const handledeleteReviews = async (e, index) => {
+    console.log(e);
+    console.log(index);
+    e.preventDefault();
+    try {
+      const web3 = await getWeb3();
+      if (!window.ethereum) {
+        throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+      }
+      await window.ethereum.enable();
+      const accounts = await web3.eth.getAccounts();
+      if (accounts.length === 0) {
+        throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+      }
+      const contract = new web3.eth.Contract(FeedBackManagement.abi, FeedBackManagement.contractAddress);
+      try {
+        console.log("start");
+        await contract.methods.removeReviewsDataAtIndex(data[2],index).call({ from: accounts[0], gas: 3000000 });
+        console.log("end");
+      } catch (error) {
+        console.log(error);
+      }
+      const updatedList = await contract.methods.getAllReviwsData(data[2]).call({ from: accounts[0], gas: 3000000 });
+      const updatedListLength = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
+
+      console.log(updatedList);
+
+      const tempReviews = [];
+
+      for (let i = 0; i < updatedListLength; i++) {
+        tempReviews.push(updatedList[i]);
+      }
+      setReviewStatus(tempReviews);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: `${error.message}`,
+      });
+    }
   }
 
   const handleTabAttemped = () => {
@@ -267,9 +255,13 @@ const Dashboard = () => {
     console.log("Clicked Expired!")
   }
 
+  const handleOnAvailableAttempt = async(e, index) => {
+
+  }
+
   return (
     <div className='main-wrapper'>
-      <h1 className='main-heading'>{(status.isHome === true) ? 'DashBoard' : (status.isReviews === true) ? 'Reviews' : 'Settings'}</h1>
+      <h1 className='main-heading'>{(status.isHome === true) ? `Welcome, ${data[1].split(" ")[0]}` : (status.isReviews === true) ? 'Reviews' : 'Settings'}</h1>
       <div className='inner-wrapper-dashboard'>
         <div className='sidebar'>
           <ul className='list-parent'>
@@ -348,9 +340,22 @@ const Dashboard = () => {
                 <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                   {
                     availabledata.map((val, index) => {
-                      <div key={index}>
-
-                      </div> 
+                      return (
+                        <div className="available-main" key={index}>
+                          <div className='available-top'>
+                            <div className='available-top-left'>{val.question}</div>
+                            <div className='available-top-right'>
+                              <span>Dated: </span>
+                              <span>{val.datestr}</span>
+                            </div>
+                          </div>
+                          <div className='available-bottom'>
+                            <Button className='btn btn-attempt' onClick={(e) => handleOnAvailableAttempt(e, index)}>
+                              Attempt
+                            </Button>
+                          </div> 
+                        </div>
+                      )
                     })
                   }
                 </div>
@@ -358,47 +363,13 @@ const Dashboard = () => {
                   {incomingdata.map((val, index) => {
                     return (
                       <div className="downtab-list" key={index}>
-                      <div className="downtab-list-top">
-                        <div className='downtab-list-top-left'>
-                        <span>Dated: </span>
-                        <span><b>{val.datestr}</b></span>
-                        </div>
-                        <div className='downtab-list-top-right'>
-                          Incoming
-                        </div>
-                      </div>
-                      <div className="downtab-list-bottom">
-                        <div className='downtab-list-bottom-left'>
-                          <p>{val.question}</p>
-                        </div>
-                        <div className='downtab-list-bottom-right'>
-                        <StarRatings
-                          className='reviews-ratings'
-                          rating={0}
-                          starRatedColor="yellow"
-                          numberOfStars={5}
-                          starDimension="20px"
-                          starSpacing="6px"
-                          name='rate'
-                        />
-                        </div>
-                      </div>
-                    </div>
-                    )
-                  })}
-                </div>
-                <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                  {
-                    attempeddata.map((val, index) => {
-                      return(
-                        <div className="downtab-list" key={index}>
                         <div className="downtab-list-top">
                           <div className='downtab-list-top-left'>
-                          <span>Dated: </span>
-                          <span><b>{val.datestr}</b></span>
+                            <span>Dated: </span>
+                            <span><b>{val.datestr}</b></span>
                           </div>
                           <div className='downtab-list-top-right'>
-                           Attempted
+                            Incoming
                           </div>
                         </div>
                         <div className="downtab-list-bottom">
@@ -406,18 +377,52 @@ const Dashboard = () => {
                             <p>{val.question}</p>
                           </div>
                           <div className='downtab-list-bottom-right'>
-                          <StarRatings
-                            className='reviews-ratings'
-                            rating={0}
-                            starRatedColor="yellow"
-                            numberOfStars={5}
-                            starDimension="20px"
-                            starSpacing="6px"
-                            name='rate'
-                          />
+                            <StarRatings
+                              className='reviews-ratings'
+                              rating={0}
+                              starRatedColor="yellow"
+                              numberOfStars={5}
+                              starDimension="20px"
+                              starSpacing="6px"
+                              name='rate'
+                            />
                           </div>
                         </div>
                       </div>
+                    )
+                  })}
+                </div>
+                <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                  {
+                    attempeddata.map((val, index) => {
+                      return (
+                        <div className="downtab-list" key={index}>
+                          <div className="downtab-list-top">
+                            <div className='downtab-list-top-left'>
+                              <span>Dated: </span>
+                              <span><b>{val.datestr}</b></span>
+                            </div>
+                            <div className='downtab-list-top-right'>
+                              Attempted
+                            </div>
+                          </div>
+                          <div className="downtab-list-bottom">
+                            <div className='downtab-list-bottom-left'>
+                              <p>{val.question}</p>
+                            </div>
+                            <div className='downtab-list-bottom-right'>
+                              <StarRatings
+                                className='reviews-ratings'
+                                rating={0}
+                                starRatedColor="yellow"
+                                numberOfStars={5}
+                                starDimension="20px"
+                                starSpacing="6px"
+                                name='rate'
+                              />
+                            </div>
+                          </div>
+                        </div>
                       )
                     })
                   }
@@ -425,12 +430,12 @@ const Dashboard = () => {
                 <div className="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
                   {
                     expireddata.map((val, index) => {
-                      return(
+                      return (
                         <div className="downtab-list" key={index}>
                           <div className="downtab-list-top">
                             <div className='downtab-list-top-left'>
-                            <span>Dated: </span>
-                            <span><b>{val.datestr}</b></span>
+                              <span>Dated: </span>
+                              <span><b>{val.datestr}</b></span>
                             </div>
                             <div className='downtab-list-top-right'>
                               Expired
@@ -441,15 +446,15 @@ const Dashboard = () => {
                               <p>{val.question}</p>
                             </div>
                             <div className='downtab-list-bottom-right'>
-                            <StarRatings
-                              className='reviews-ratings'
-                              rating={0}
-                              starRatedColor="yellow"
-                              numberOfStars={5}
-                              starDimension="20px"
-                              starSpacing="6px"
-                              name='rate'
-                            />
+                              <StarRatings
+                                className='reviews-ratings'
+                                rating={0}
+                                starRatedColor="yellow"
+                                numberOfStars={5}
+                                starDimension="20px"
+                                starSpacing="6px"
+                                name='rate'
+                              />
                             </div>
                           </div>
                         </div>
@@ -462,38 +467,40 @@ const Dashboard = () => {
           </div> :
             status.isReviews === true ?
               <div className='main-dashboard reviews'>
-                {
+                {reviewStatus.length > 0 ?
                   reviewStatus.map((items, index) => {
                     return (
-                      <div className='reviews-list' key={index}>
-                        <div className='reviews-list-top'>
-                          <div className='list-top-left'>
-                            <span>Dated: </span>
-                            <span><b>{items.param2}</b></span>
+                      <>
+                        {items.param3 && <div className='reviews-list' key={index}>
+                          <div className='reviews-list-top'>
+                            <div className='list-top-left'>
+                              <span>Dated: </span>
+                              <span><b>{items.param2}</b></span>
+                            </div>
+                            <div className='list-top-right' onClick={(e) => handledeleteReviews(e, index)}>
+                              <Delete />
+                            </div>
                           </div>
-                          <div className='list-top-right' onClick={() => handledeleteReviews(index)}>
-                            <Delete />
+                          <div className='reviews-list-bottom'>
+                            <div className='list-bottom-left'>
+                              <p>{items.param1}</p>
+                            </div>
+                            <div className='list-bottom-right'>
+                              <StarRatings
+                                className='reviews-ratings'
+                                rating={parseInt(items.param3)}
+                                starRatedColor="yellow"
+                                numberOfStars={5}
+                                starDimension="20px"
+                                starSpacing="6px"
+                                name='rate'
+                              />
+                            </div>
                           </div>
-                        </div>
-                        <div className='reviews-list-bottom'>
-                          <div className='list-bottom-left'>
-                            <p>{items.param1}</p>
-                          </div>
-                          <div className='list-bottom-right'>
-                            <StarRatings
-                              className='reviews-ratings'
-                              rating={parseInt(items.param3)}
-                              starRatedColor="yellow"
-                              numberOfStars={5}
-                              starDimension="20px"
-                              starSpacing="6px"
-                              name='rate'
-                            />
-                          </div>
-                        </div>
-                      </div>
+                        </div>}
+                      </>
                     )
-                  })
+                  }) : <h2 className='text-center text-danger w-100 d-flex justify-content-center align-items-center mt-2 p-3'> NO RECORDS FOUND </h2>
                 }
               </div> :
               <div className='main-dashboard settings'>
@@ -501,11 +508,11 @@ const Dashboard = () => {
                 <div className='settings-wrapper'>
                   <div className='settings1'>
                     <label className="switch">
-                      <input type="checkbox" value={toggle.isDark} onChange={(e) => handleOntoggle(e,'mode')} />
+                      <input type="checkbox" value={toggle.isDark} onChange={(e) => handleOntoggle(e, 'mode')} />
                       <span className="slider round"></span>
                     </label>
                     <label className="switch">
-                      <input type="checkbox" value={toggle.isLocked} onChange={(e) => handleOntoggle(e,'lock')} />
+                      <input type="checkbox" value={toggle.isLocked} onChange={(e) => handleOntoggle(e, 'lock')} />
                       <span className="slider round"></span>
                     </label>
                   </div>
