@@ -40,10 +40,10 @@ button.post-btn:hover{
     align-items: center;
     justify-content: center;
     position: absolute;
-    transform: translate(85%, 5%);
+    transform: translate(60%, 5%);
     background: black;
     border-radius: 5px;
-    width: 30rem;
+    width: 40rem;
     z-index: 10000;
     height: 33rem;
     pointer-events: all !important;
@@ -60,7 +60,14 @@ button.post-btn:hover{
     height: 90%;
     border-radius: 5px;
     width: 90%;
+    overflow: scroll;
+    overflow-x: hidden;
     background: #fff;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.form-main-container::-webkit-scrollbar { 
+    display: none;
 }
 .backdropclass{
     backface-visibility: hidden;
@@ -69,4 +76,18 @@ button.post-btn:hover{
     width: 100%;
     pointer-events: none;
     z-index: 100;
+}
+form.form{
+    padding: 10px !important;
+}
+.btn-submit{
+    margin-top: 10px;
+}
+.form-select{
+    font-weight: 100;
+}
+.form-label {
+    font-weight: 700;
+    font-size: medium;
+    margin-bottom: 0.5rem;
 }
