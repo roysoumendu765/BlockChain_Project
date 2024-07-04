@@ -47,7 +47,7 @@ const Dashboard = () => {
     const dateToCompare = new Date(givenDate);
     const differenceMs = today - dateToCompare;
     const daysDifference = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
-    return daysDifference;
+    return Math.abs(daysDifference);
   }
 
   useEffect(() => {
@@ -74,7 +74,9 @@ const Dashboard = () => {
         console.log(response);
 
         for (let i = 0; i < responseSize; i++) {
+          console.log(typeof response[i].datestr);
           const daydifference = getNumberOfDays(response[i].datestr);
+          console.log(daydifference);
           if (daydifference >= 0 && daydifference < 7) {
             availableArr.push(response[i])
           } else if (daydifference >= 7) {
@@ -83,6 +85,10 @@ const Dashboard = () => {
             expiredArr.push(response[i]);
           }
         }
+
+        console.log(availableArr);
+        console.log(incomingArr);
+        console.log(expiredArr);
 
         const attempedResponseSize = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
         console.log(responseSize);
@@ -289,7 +295,7 @@ const Dashboard = () => {
                 <div className='profile-pic mb-2'>
                   <img className='profile-circle' src="" alt="" />
                 </div>
-                <h3 className='profile-name'>Alex</h3>
+                <h3 className='profile-name'>{data[1]}</h3>
               </div>
               <div className='right-pane'>
                 <div className='rating-vals'>

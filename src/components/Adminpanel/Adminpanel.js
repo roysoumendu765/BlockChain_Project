@@ -452,7 +452,7 @@ const Adminpanel = () => {
             }
             const contract = new web3.eth.Contract(FeedBackManagement.abi, FeedBackManagement.contractAddress); 
 
-            await contract.methods.addfeedbackdata(questionValue, categoryType, severityType, subQues1, subQues2, subQues3, subQues4, subQues5, option1, option2, overallExp, datestr);
+            await contract.methods.addFeedbackData(questionValue, categoryType, severityType, [subQues1, subQues2, subQues3, subQues4, subQues5], [option1, option2], overallExp, datestr).send({from: accounts[0], gas: 3000000});
 
             setQuestionValue("");
             setCategoryType("");
