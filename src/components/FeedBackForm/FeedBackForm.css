@@ -1,0 +1,177 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.feedback-main-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: max-content;
+    padding: 5px;
+}
+.form-heading {
+    width: 80%;
+    border-radius: 5px;
+    padding-left: 5px;
+    margin: 10px auto;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 500;
+    background: lightgreen;
+    height: 3rem;
+}
+.form-layout {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+    background: #f1f1f1;
+    height: max-content;
+}
+.top-layout {
+    justify-content: space-between;
+    width: 95%;
+    background: #4c4848;
+    height: 3rem;
+    align-items: center;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin: 10px auto;
+    display: flex;
+    font-size: 18px;
+}
+.main-layout {
+    margin: 10px auto;
+    width: 95%;
+    height: max-content;
+    display: flex;
+    border-radius: 5px;
+    flex-direction: column;
+    background: #e0e0e0;
+}
+span.severity-label {
+    padding: 2px;
+    border-radius: 5px;
+}
+.severity-low{
+    background-color: #2ECC40;
+    color: black;
+}
+.severity-mid{
+    background-color: #FFDC00;
+    color: black;
+}
+.severity-high{
+    background-color: #FF4136;
+    color: white;
+}
+span.category-label{
+    padding: 2px;
+    border-radius: 5px;
+}
+.category-sales{
+    background-color: #2ECC40;
+    color: black;
+}
+.category-constructive{
+    background-color:#FF851B;
+    color: white;
+}
+.category-positive{
+    background-color: #39CCCC;
+    color: black;
+}
+.category-behavioral{
+    background-color: #FF4136;
+    color: white;
+}
+.category-feature{
+    background-color: #0074D9;
+    color: white;
+}
+.category-informal{
+    color: black;
+    background-color: #FFDC00;
+}
+.category-negative{
+    color: white;
+    background-color: #85144b;
+}
+.category-nps{
+    color: white;
+    background-color: #B10DC9;
+}
+.category-customer{
+    color: black;
+    background-color: #3D9970;
+}
+span{
+    font-weight: 500;
+}
+.date-Section {
+    width: 95%;
+    padding: 5px;
+    display: flex;
+    justify-content: end;
+}
+.question-section{
+    padding: 5px;
+}
+h2.question-heading {
+    background: #6fd06f;
+    padding: 2px;
+    border-radius: 5px;
+    width: max-content;
+}
+h5.question-text {
+    background: #382f2f;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+.overall-experience-section {
+    padding: 5px;
+    line-height: 2.5rem;
+}
+.optionalquestion-section {
+    padding: 5px;
+    line-height: 2.5rem;
+}
+.subquestion-section {
+    padding: 5px;
+    line-height: 2.5rem;
+}
+.optional-question {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 3.5rem;
+}
+.sub-question {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    height: 3.5rem;
+}
+.rating-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+span.subquestion-inner {
+    width: 60%;
+    line-height: 1rem;
+}
+span.subquestion-rating {
+    width: 30%;
+}

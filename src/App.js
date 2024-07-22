@@ -11,6 +11,7 @@ import AdminLogin from "./components/AdminLogin/AdminLogin";
 import Adminpanel from "./components/Adminpanel/Adminpanel";
 import PageNotFound from "./components/PageNotFound/PageNotFound";
 import Dashboard from "./components/Dashboard/Dashboard";
+import FeedBackForm from "./components/FeedBackForm/FeedBackForm";
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/listfeedback" element={<FeedbackList value=""/>} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/feedbackform" element={<FeedBackForm />} />
         <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>

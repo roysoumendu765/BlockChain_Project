@@ -21,6 +21,7 @@ const Adminpanel = () => {
     const [option2, setOption2] = useState("");
     const [overallExp, setOverallExp] = useState("");
     const [questionValue, setQuestionValue] = useState("");
+    const [uniqueId, setUniqueId] = useState("");
 
     const categories = [
         {
@@ -420,6 +421,10 @@ const Adminpanel = () => {
     const handleQuestionValue = (e) => {
         setQuestionValue(e.target.value);
     }
+    
+    const handleUniqueId = (e) => {
+        setUniqueId(e.target.value);
+    }
 
     const presentDate = () => {
         const date = new Date(); 
@@ -452,7 +457,7 @@ const Adminpanel = () => {
             }
             const contract = new web3.eth.Contract(FeedBackManagement.abi, FeedBackManagement.contractAddress); 
 
-            await contract.methods.addFeedbackData(questionValue, categoryType, severityType, [subQues1, subQues2, subQues3, subQues4, subQues5], [option1, option2], overallExp, datestr).send({from: accounts[0], gas: 3000000});
+            await contract.methods.addFeedbackData(questionValue, categoryType, severityType, [subQues1, subQues2, subQues3, subQues4, subQues5], [option1, option2], overallExp, datestr, uniqueId).send({from: accounts[0], gas: 3000000});
 
             setQuestionValue("");
             setCategoryType("");
@@ -465,6 +470,7 @@ const Adminpanel = () => {
             setOption1("");
             setOption2("");
             setOverallExp("");
+            setUniqueId("")
             setshowModal(false);
 
             Swal.fire({
@@ -623,7 +629,11 @@ const Adminpanel = () => {
                                         })
                                     }
                                 </Form.Select>
-                             </Form.Group>
+                             </Form.Group>\
+                             <Form.Group className="mb-3" controlId="formUniqueId">
+                                <Form.Label>UniqueId</Form.Label>
+                                <Form.Control type="text" placeholder="Enter Unique Id" value={uniqueId} onChange={handleUniqueId} />
+                            </Form.Group>
                             <Button type="submit" className='btn-submit'>
                                 Submit
                             </Button>

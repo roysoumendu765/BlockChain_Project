@@ -23,6 +23,7 @@ const Dashboard = () => {
   const [expireddata, setExpiredData] = useState([]);
   const [attempeddata, setAttempedData] = useState([]);
   const [rating, setRating] = useState(3);
+  const [responseData, setResponseData] = useState({});
 
   const availableArr = [];
   const incomingArr = [];
@@ -72,6 +73,9 @@ const Dashboard = () => {
         console.log(responseSize);
         const response = await contract.methods.getAllfeedbacks().call({ from: accounts[0], gas: 3000000 });
         console.log(response);
+        console.log(typeof response);
+        
+        setResponseData(response)
 
         for (let i = 0; i < responseSize; i++) {
           console.log(typeof response[i].datestr);
@@ -265,6 +269,11 @@ const Dashboard = () => {
 
   }
 
+  const handlePostButton = () => {
+    console.log(responseData);
+    navigate('/feedbackform', {state: {data: responseData}})
+  }
+
   return (
     <div className='main-wrapper'>
       <h1 className='main-heading'>{(status.isHome === true) ? `Welcome, ${data[1].split(" ")[0]}` : (status.isReviews === true) ? 'Reviews' : 'Settings'}</h1>
@@ -326,6 +335,9 @@ const Dashboard = () => {
                   }
                 </div>
               </div>
+            </div>
+            <div className='d-flex justify-content-center align-items-center mt-3 mb-3'> 
+                  <Button onClick={handlePostButton}>Submit</Button>
             </div>
             <div className='tab-panel'>
               <ul className="nav nav-tabs" id="myTab" role="tablist">
