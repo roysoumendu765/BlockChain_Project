@@ -1,0 +1,109 @@
+.navbar {
+    margin-top: 20px;
+  }
+  /* Main.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.mainpage-container {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+}
+
+.mainpage-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+.mainpage-heading {
+    color : #373535;
+    text-decoration: solid;
+    font-size: 3.5rem;
+    font-family :'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-weight: 1000;
+    display: flex;
+    justify-content: center;
+
+}
+.mainpage-description{
+    font-weight: 500;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content:  center;
+    }
+.search-section {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+.feedback-section {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Adding some additional styling for the search and feedback components */
+
+.search-section input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.feedback-section .feedback-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.feedback-section .feedback-item:hover {
+    background-color: #f9f9f9;
+}
+  .Main h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+
+  }
+  
+  .Main p {
+    font-size: 1.2em;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+  .navbar-nav {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .nav-item {
+    margin: 0;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+  }
+  
+  .nav-link:hover {
+    text-decoration: underline;
+  }

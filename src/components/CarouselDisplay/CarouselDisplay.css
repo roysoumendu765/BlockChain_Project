@@ -1,0 +1,40 @@
+.carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .carousel-button {
+    background: none;
+    border: none;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0 10px;
+    transition: color 0.3s;
+  }
+  
+  .carousel-button:hover {
+    color: #888;
+  }
+  
+  .carousel-content {
+    text-align: center;
+  }
+  
+  .carousel-content h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .carousel-content p {
+    font-size: 1em;
+    color: #666;
+    line-height: 1.4;
+    margin: 10px 0 0;
+  }
