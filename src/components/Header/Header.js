@@ -29,8 +29,8 @@ const Header = () => {
       <button
         className="navbar-toggler"
         type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
         aria-controls="navbarNav"
         aria-expanded="false"
         aria-label="Toggle navigation"
@@ -39,38 +39,40 @@ const Header = () => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
+          <li className="nav-item px-2">
             <Link className="nav-link" to="/">
               Home
             </Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item px-2">
             <Link className="nav-link" to="/login">
               Login
             </Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item px-2">
             <Link className="nav-link" to="/contactus">
               Contact Us
             </Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item px-2">
             <Link className="nav-link" to="/listfeedback">
               FeedBacks
             </Link>
           </li>
-          <li className="nav-item">
+          <li className="nav-item px-2">
             <Link className="nav-link" to="/adminlogin">
               Admin
             </Link>
           </li>
         </ul>
-        {display && <Button onClick={handleAdminLogout}>
+        {display && (
+          <Button onClick={handleAdminLogout} className="ms-lg-3 mt-2 mt-lg-0">
             <Logout /> Logout
-        </Button>}
+          </Button>
+        )}
       </div>
     </nav>
-  )
+  );
 };
 
 export default Header;
