@@ -3,12 +3,17 @@ import StarRatings from 'react-star-ratings';
 import { Form } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import './FeedBackForm.css';
-import { useLocation } from 'react-router';
+import { useLocation,useNavigate } from 'react-router';
+import Swal from 'sweetalert2';
+import FeedBackManagement from '../../contracts/FeedManagement.json';
+import getWeb3 from '../../web3js/web3';
 
 const FeedBackForm = () => {
+    const navigate = useNavigate();
     const location = useLocation();
-    const {data} = location.state || {};
-    
+    console.log(location);
+    const {data, userData} = location.state || {};
+    // const userData = "edward123@gmail.com";
     const categoryData = data[0].category;
     const severityData = data[0].severity;
     const dateStr = data[0].dateStr;
@@ -16,8 +21,36 @@ const FeedBackForm = () => {
     const subQuestions = data[0].subquestions;
     const optionalQuestions = data[0].optionalQuestions;
     const overallExperience = data[0].overallExperience;
+    const uniqueId = data[0].uniqueId;
 
     console.log(optionalQuestions);
+    console.log(userData);
+    
+    const [isUnique, setIsUnique] = useState(false);
+
+    useEffect(() => {
+        return async () => {
+            try {
+                const web3 = await getWeb3();
+                if (!window.ethereum) {
+                  throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+                }
+                await window.ethereum.enable();
+                const accounts = await web3.eth.getAccounts();
+                if (accounts.length === 0) {
+                  throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+                }
+                const contract = new web3.eth.Contract(
+                  FeedBackManagement.abi,
+                  FeedBackManagement.contractAddress
+                );
+                const response =  await contract.methods.getUniqueDetails(userData).call({from: accounts[0], gas: 300000});
+                console.log("response",response)
+            } catch(error){
+                console.log(error)
+            }
+        }
+    },[])
 
     // SubQuestions
     const [subquestionRating1, setSubQuestionRating1] = useState(0);
@@ -85,6 +118,47 @@ const FeedBackForm = () => {
         setOverallExperienceText(e.target.value);
     }
 
+    const handleSubmit = async (e) => {
+        if(subquestionRating1 == 0 || subquestionRating2 == 0 || subquestionRating3 == 0 || subquestionRating4 == 0 || subquestionRating5 == 0 || optionalRating1 == 0 || optionalRating2 == 0 || overallRating == 0 || overallExperienceText == ""){
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: `Please Fill in the Details`,
+              });
+        } else {
+                e.preventDefault();
+                try {
+                  const web3 = await getWeb3();
+                  if (!window.ethereum) {
+                    throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+                  }
+                  await window.ethereum.enable();
+                  const accounts = await web3.eth.getAccounts();
+                  if (accounts.length === 0) {
+                    throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+                  }
+            
+                  const contract = new web3.eth.Contract(
+                    FeedBackManagement.abi,
+                    FeedBackManagement.contractAddress
+                  );
+                  await contract.Methods.addUniqueDetails(userData, uniqueId).send({from: accounts[0], gas: 300000})
+                  await contract.methods.addRatings(userData,Question,overallExperienceText,categoryData,severityData,averageSub,avgoptional,overallExperience).send({from: accounts[0], gas: 3000000});
+                  Swal.fire({
+                    title: "Success",
+                    text: `Feedback Submitted Successfully`,
+                    icon: "success"
+                })
+        } catch(error){
+            Swal.fire({
+                title: "Error",
+                text: `Something Went Wrong!`,
+                icon: "error"
+            })
+        }
+    }
+}
+
     useEffect(() => {
         AverageOptionalRating();
     },[optionalRating1, optionalRating2]);
@@ -94,7 +168,9 @@ const FeedBackForm = () => {
     },[subquestionRating1, subquestionRating2, subquestionRating3,subquestionRating4, subquestionRating5]);
 
     return (
-        <div className="feedback-main-container">
+        <>
+        {data && data[0] && data[0].length > 0 ?
+        <div className="feedback-main-container">   
             <div className='form-heading'>
                 FeedBack-Form
             </div>
@@ -253,9 +329,13 @@ const FeedBackForm = () => {
                     </Form>
                 </div>
              </div>
+            <Button onClick={handleSubmit}>Submit</Button>
             </div>
-            <Button>Submit</Button>
-        </div>
+        </div> 
+        : <div className='feedback-main-container'>
+            <Button className='btn btn-primary' onClick={() => navigate('/')}>Go Back</Button>
+            </div>}
+        </>
     )
 }
 

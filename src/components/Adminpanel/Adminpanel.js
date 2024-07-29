@@ -629,7 +629,7 @@ const Adminpanel = () => {
                                         })
                                     }
                                 </Form.Select>
-                             </Form.Group>\
+                             </Form.Group>
                              <Form.Group className="mb-3" controlId="formUniqueId">
                                 <Form.Label>UniqueId</Form.Label>
                                 <Form.Control type="text" placeholder="Enter Unique Id" value={uniqueId} onChange={handleUniqueId} />

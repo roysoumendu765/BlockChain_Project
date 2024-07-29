@@ -271,7 +271,7 @@ const Dashboard = () => {
 
   const handlePostButton = () => {
     console.log(responseData);
-    navigate('/feedbackform', {state: {data: responseData}})
+    navigate('/feedbackform', {state: {data: responseData, userData: data[2]}})
   }
 
   return (
