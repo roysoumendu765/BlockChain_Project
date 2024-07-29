@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import FeedbackList from "../FeedbackList/FeedbackList";
-import SearchFeedback from "../SearchFeedback/SearchFeedback";
 import CarouselDisplay from "../CarouselDisplay/CarouselDisplay";
 import ReviewItem from "./ReviewItem/ReviewItem";
 import "./Main.css";
