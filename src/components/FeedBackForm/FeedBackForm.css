@@ -174,4 +174,6 @@ span.subquestion-inner {
 }
 span.subquestion-rating {
     width: 30%;
+    display: flex;
+    justify-content: end;
 }
