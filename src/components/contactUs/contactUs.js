@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import './contactUs.css';
+import Swal from "sweetalert2";
+import FeedBackManagement from '../../contracts/FeedManagement.json';
+import getWeb3 from "../../web3js/web3";
 
 const ContactUs = () => {
   const [name,setName] = useState("");
@@ -18,8 +21,41 @@ const ContactUs = () => {
     setMessage(e.target.value);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const web3 = await getWeb3();
+      if (!window.ethereum) {
+        throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+      }
+      await window.ethereum.enable();
+      const accounts = await web3.eth.getAccounts();
+      if (accounts.length === 0) {
+        throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+      }
+      const contract = new web3.eth.Contract(
+        FeedBackManagement.abi,
+        FeedBackManagement.contractAddress
+      );
+
+      await contract.methods.setContactForm(name,email,message).send({from: accounts[0], gas: 3000000});
+
+      setName("");
+      setEmail("");
+      setMessage("");
+
+      Swal.fire({
+        title: "Success",
+        text: `Thanks for Contacting Us. Our Team would shortly contact you.`,
+        icon: "success"
+      })
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: `Something went wrong`,
+        icon: "error"
+      })
+    }
     
     console.log(e);
 
@@ -27,7 +63,7 @@ const ContactUs = () => {
 
   return(
     <div className="main-contact">
-    <h1 className="mt-2">Contact Us</h1>
+    <h1 className="mt-2 text-bold">Contact Us</h1>
     <div className="form-main">
       <form className="form-container" onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>

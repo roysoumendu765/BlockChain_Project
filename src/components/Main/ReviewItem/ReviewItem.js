@@ -1,11 +1,13 @@
 import React from 'react';
 import './ReviewItem.css';
 
-const ReviewItem = ({ title, content }) => {
+const ReviewItem = (props) => {
+  console.log(props)
   return (
     <div className="review-item">
-      <h4>{title}</h4>
-      <p>{content}</p>
+      <h4>{props.ratedquestion}</h4>
+      <p>{props.datestr}</p>
+      <p>{props.overallexperience}</p>
     </div>
   );
 };

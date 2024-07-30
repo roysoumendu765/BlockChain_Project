@@ -16,8 +16,8 @@ const CarouselDisplay = ({ reviews }) => {
     <div className="carousel">
       <button className="carousel-button" onClick={prevSlide}>&lt;</button>
       <div className="carousel-content">
-        <h3>{reviews[currentIndex].title}</h3>
-        <p>{reviews[currentIndex].content}</p>
+        <h3>{reviews.ratedquestion}</h3>
+        {/* <p>{reviews[currentIndex].content}</p> */}
       </div>
       <button className="carousel-button" onClick={nextSlide}>&gt;</button>
     </div>

@@ -11,12 +11,19 @@ import { CheckBoxOutlineBlank } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router';
 import FeedBackManagement from '../../contracts/FeedManagement.json';
 import getWeb3 from '../../web3js/web3';
+import avatar1 from './img/avatar1.png'
+import avatar2 from './img/avatar2.png';
+import avatar3 from './img/avatar3.png';
+import avatar4 from './img/avatar4.png';
+import avatar5 from './img/avatar5.png';
+import avatar6 from './img/avatar6.png';
 import Swal from 'sweetalert2';
 import bigInt from 'big-integer';
 
 const Dashboard = () => {
   const location = useLocation();
   const { data } = location.state || {};
+  console.log(data);
 
   const [availabledata, setAvailableData] = useState([]);
   const [incomingdata, setIncomingData] = useState([]);
@@ -24,6 +31,10 @@ const Dashboard = () => {
   const [attempeddata, setAttempedData] = useState([]);
   const [rating, setRating] = useState(3);
   const [responseData, setResponseData] = useState({});
+  const [avatarImg, setAvatarImg] = useState("");
+  const [raterRating, setRaterRating] = useState(0);
+  const [totalposted, setTotalPosted] = useState(0);
+  const [totaldata, setTotalData] = useState(0);
 
   const availableArr = [];
   const incomingArr = [];
@@ -48,8 +59,56 @@ const Dashboard = () => {
     const dateToCompare = new Date(givenDate);
     const differenceMs = today - dateToCompare;
     const daysDifference = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
-    return Math.abs(daysDifference);
+    return daysDifference + 1;
   }
+
+  // useEffect(() => {
+  //   return async () => {
+  //     try {
+  //       const web3 = await getWeb3();
+  //       if (!window.ethereum) {
+  //         throw new Error("MetaMask is not installed. Please install it to use this dApp.");
+  //       }
+  //       await window.ethereum.enable();
+  //       const accounts = await web3.eth.getAccounts();
+  //       if (accounts.length === 0) {
+  //         throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
+  //       }
+  //       const contract = new web3.eth.Contract(
+  //         FeedBackManagement.abi,
+  //         FeedBackManagement.contractAddress
+  //       );
+
+  //       const totalpostedlength = await contract.methods.getTotalPostedLength(data[3]).call({from: accounts[0], gas: 3000000})
+  //       setTotalPosted(totalpostedlength);
+
+  //       const totalRatingResponse = await contract.methods.getTotalRatingLength(data[3]).call({from: accounts[0], gas: 3000000});
+  //       setRaterRating(totalRatingResponse);
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // },[])
+
+  useEffect(() => {
+    return async () => {
+      let x = Number(data[3])
+      if(x == 1){
+        setAvatarImg(avatar1)
+      } else if(x == 2){
+        setAvatarImg(avatar2)
+      } else if(x == 3){
+        setAvatarImg(avatar3)
+      } else if(x == 4){
+        setAvatarImg(avatar4)
+      } else if(x == 5){
+        setAvatarImg(avatar5)
+      } else if(x == 6){
+        setAvatarImg(avatar6)
+      }
+      console.log(avatarImg)
+    }
+  }, [])
 
   useEffect(() => {
 
@@ -71,22 +130,23 @@ const Dashboard = () => {
 
         const responseSize = await contract.methods.getfeedbackdatacount().call({ from: accounts[0], gas: 3000000 });
         console.log(responseSize);
+        // setTotalData(responseData)
         const response = await contract.methods.getAllfeedbacks().call({ from: accounts[0], gas: 3000000 });
         console.log(response);
         console.log(typeof response);
         
         setResponseData(response)
 
-        for (let i = 0; i < responseSize; i++) {
-          console.log(typeof response[i].datestr);
-          const daydifference = getNumberOfDays(response[i].datestr);
-          console.log(daydifference);
-          if (daydifference >= 0 && daydifference < 7) {
+        for (let i = 0; i < responseSize ; i++) {
+          const daydifference = getNumberOfDays(response[i].dateStr);
+          console.log(daydifference)
+          if(daydifference >= 7){
+            expiredArr.push(response[i])
+          } else if(daydifference >= 0 && daydifference < 7){
+            if(!availableArr.includes(response[i]))
             availableArr.push(response[i])
-          } else if (daydifference >= 7) {
-            incomingArr.push(response[i]);
-          } else if (daydifference < 0) {
-            expiredArr.push(response[i]);
+          } else if (daydifference < 0){
+            incomingArr.push(response[i])
           }
         }
 
@@ -94,9 +154,10 @@ const Dashboard = () => {
         console.log(incomingArr);
         console.log(expiredArr);
 
-        const attempedResponseSize = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
-        console.log(responseSize);
-        const attemptedResponse = await contract.methods.getAllReviwsData(data[2]).call({ from: accounts[0], gas: 3000000 });
+        const attempedResponseSize = await contract.methods.getRatingDetailsLength(data[2]).call({ from: accounts[0], gas: 3000000 });
+        console.log(responseSize)
+        const attemptedResponse = await contract.methods.getRatingsDetails(data[2]).call({ from: accounts[0], gas: 3000000 });
+        console.log(attemptedResponse)
 
         for (let i = 0; i < attempedResponseSize; i++) {
           attemptedArr.push(attemptedResponse[i]);
@@ -185,9 +246,9 @@ const Dashboard = () => {
         FeedBackManagement.contractAddress
       );
 
-      const responseSize = await contract.methods.getReviewsDataLength(data[2]).call({ from: accounts[0], gas: 3000000 });
+      const responseSize = await contract.methods.getRatingsDetailsLength(data[2]).call({ from: accounts[0], gas: 3000000 });
       console.log(responseSize);
-      const response = await contract.methods.getAllReviwsData(data[2]).call({ from: accounts[0], gas: 3000000 });
+      const response = await contract.methods.getRatingsDetails(data[2]).call({ from: accounts[0], gas: 3000000 });
       console.log(response);
 
       const tempdata = [];
@@ -266,12 +327,11 @@ const Dashboard = () => {
   }
 
   const handleOnAvailableAttempt = async(e, index) => {
-
+    console.log(availabledata[index]);
+    navigate('/feedbackform', {state: {data: availabledata[index], userData: data[2]}})
   }
 
   const handlePostButton = () => {
-    console.log(responseData);
-    navigate('/feedbackform', {state: {data: responseData, userData: data[2]}})
   }
 
   return (
@@ -288,10 +348,10 @@ const Dashboard = () => {
               <span><Reviews /></span>
               <span>REVIEWS</span>
             </li>
-            <li className='list-item' onClick={handleOnSettings}>
+            {/* <li className='list-item' onClick={handleOnSettings}>
               <span><Settings /></span>
               <span>SETTINGS</span>
-            </li>
+            </li> */}
           </ul>
           <button className='btn-black' onClick={handleOnLogout}>
             <Logout /> Logout
@@ -302,7 +362,7 @@ const Dashboard = () => {
             <div className='profile-section mb-3'>
               <div className='left-pane'>
                 <div className='profile-pic mb-2'>
-                  <img className='profile-circle' src="" alt="" />
+                  <img className='profile-circle' src={avatarImg} alt="" />
                 </div>
                 <h3 className='profile-name'>{data[1]}</h3>
               </div>
@@ -336,9 +396,9 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className='d-flex justify-content-center align-items-center mt-3 mb-3'> 
+            {/* <div className='d-flex justify-content-center align-items-center mt-3 mb-3'> 
                   <Button onClick={handlePostButton}>Submit</Button>
-            </div>
+            </div> */}
             <div className='tab-panel'>
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item" role="presentation">
@@ -364,7 +424,7 @@ const Dashboard = () => {
                             <div className='available-top-left'>{val.question}</div>
                             <div className='available-top-right'>
                               <span>Dated: </span>
-                              <span>{val.datestr}</span>
+                              <span>{val.dateStr}</span>
                             </div>
                           </div>
                           <div className='available-bottom'>
@@ -384,10 +444,9 @@ const Dashboard = () => {
                         <div className="downtab-list-top">
                           <div className='downtab-list-top-left'>
                             <span>Dated: </span>
-                            <span><b>{val.datestr}</b></span>
+                            <span><b>{val.dateStr}</b></span>
                           </div>
                           <div className='downtab-list-top-right'>
-                            Incoming
                           </div>
                         </div>
                         <div className="downtab-list-bottom">
@@ -431,7 +490,7 @@ const Dashboard = () => {
                             <div className='downtab-list-bottom-right'>
                               <StarRatings
                                 className='reviews-ratings'
-                                rating={0}
+                                rating={Number(val.overallrating)}
                                 starRatedColor="yellow"
                                 numberOfStars={5}
                                 starDimension="20px"
@@ -449,7 +508,7 @@ const Dashboard = () => {
                   {
                     expireddata.map((val, index) => {
                       return (
-                        <div className="downtab-list" key={index}>
+                        <div className="downtab-list expired" key={index}>
                           <div className="downtab-list-top">
                             <div className='downtab-list-top-left'>
                               <span>Dated: </span>
@@ -485,28 +544,28 @@ const Dashboard = () => {
           </div> :
             status.isReviews === true ?
               <div className='main-dashboard reviews'>
-                {reviewStatus.length > 0 ?
-                  reviewStatus.map((items, index) => {
+                {attempeddata.length > 0 ?
+                  attempeddata.map((items, index) => {
                     return (
                       <>
-                        {items.param3 && <div className='reviews-list' key={index}>
+                        {items.overallrating && <div className='reviews-list' key={index}>
                           <div className='reviews-list-top'>
                             <div className='list-top-left'>
                               <span>Dated: </span>
-                              <span><b>{items.param2}</b></span>
+                              <span><b>{items.datestr}</b></span>
                             </div>
-                            <div className='list-top-right' onClick={(e) => handledeleteReviews(e, index)}>
+                            {/* <div className='list-top-right' onClick={(e) => handledeleteReviews(e, index)}>
                               <Delete />
-                            </div>
+                            </div> */}
                           </div>
                           <div className='reviews-list-bottom'>
                             <div className='list-bottom-left'>
-                              <p>{items.param1}</p>
+                              <p>{items.ratedquestion}</p>
                             </div>
                             <div className='list-bottom-right'>
                               <StarRatings
                                 className='reviews-ratings'
-                                rating={parseInt(items.param3)}
+                                rating={parseInt(items.overallrating)}
                                 starRatedColor="yellow"
                                 numberOfStars={5}
                                 starDimension="20px"
@@ -539,18 +598,24 @@ const Dashboard = () => {
               </div>
         }
         <div className='side-cards'>
-          {
-            [1, 2, 3].map(element => {
-              return (
-                <div className="card text-center">
+                <div className="card main text-center">
                   <div className="card-body">
-                    <h5 className="card-title">Special title treatment</h5>
-                    <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <h5 className="card-title">Overall Rating</h5>
+                    <h4 className="card-text">{raterRating}</h4>
                   </div>
                 </div>
-              )
-            })
-          }
+                <div className="card main text-center">
+                  <div className="card-body">
+                    <h5 className="card-title">Total FeedBacks</h5>
+                    <h4 className="card-text">{totaldata}</h4>
+                  </div>
+                </div>
+                <div className="card main text-center">
+                  <div className="card-body">
+                    <h5 className="card-title">Total Posted</h5>
+                    <h4 className="card-text">{totalposted}</h4>
+                  </div>
+                </div>
         </div>
       </div>
     </div>

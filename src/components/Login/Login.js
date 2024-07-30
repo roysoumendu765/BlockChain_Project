@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Carousel from 'react-bootstrap/Carousel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import './Login.css';
 import { useNavigate } from 'react-router';
-import { LoginRounded, AppRegistration } from '@mui/icons-material';
+import { LoginRounded, AppRegistration,AccountCircleRounded, CancelPresentationRounded } from '@mui/icons-material';
 import FeedBackManagement from '../../contracts/FeedManagement.json';
 import getWeb3 from '../../web3js/web3';
 import Swal from 'sweetalert2';
@@ -19,6 +18,8 @@ const Login = () => {
     isLogin: true,
     isRegister: false
   });
+  const [avatarImg, SetAvatarImg] = useState(false);
+  const [avatarVal, SetAvatarVal] = useState(0);
 
   const handleName = (e) => {
     setName(e.target.value);
@@ -63,7 +64,7 @@ const Login = () => {
       const username = email; // Assuming `email` is used as `username`
       console.log(name, username, password);
 
-      await contract.methods.registerUser(String(name), String(email), String(password)).send({from: accounts[0], gas: 3000000});
+      await contract.methods.registerUser(String(name), String(email), String(password), Number(avatarVal)).send({from: accounts[0], gas: 3000000});
       console.log("User registered successfully");
 
       Swal.fire({
@@ -75,6 +76,7 @@ const Login = () => {
       setName("");
       setEmail("");
       setPassword("");
+      SetAvatarVal(0);
 
     } catch (error) {
       console.error("Error occurred:", error);
@@ -155,13 +157,41 @@ const Login = () => {
     setPassword("");
   };
 
+  const openAvatar = () => {
+    SetAvatarImg(!avatarImg)
+  }
+
+  const handleClose = () => {
+    SetAvatarImg(!avatarImg);
+  }
+
+  const handleAvatarSubmit = () => {
+    SetAvatarImg(!avatarImg);
+    console.log(avatarVal)
+  }
+
   return (
     <div className='main-container'>
+    {avatarImg && <div className="modal-avatar">
+      <div className='top-cancel' onClick={handleClose}><CancelPresentationRounded/></div>
+      <div className='top'>
+        <div className='avatar avatar1' onClick={() => SetAvatarVal(1)}></div>
+        <div className='avatar avatar2' onClick={() => SetAvatarVal(2)}></div>
+      </div>
+      <div className='middle'>
+        <div className='avatar avatar3' onClick={() => SetAvatarVal(3)}></div>
+        <div className='avatar avatar4' onClick={() => SetAvatarVal(4)}></div>
+      </div>
+      <div className='bottom'>
+        <div className='avatar avatar5' onClick={() => SetAvatarVal(5)}></div>
+        <div className='avatar avatar6'onClick={() => SetAvatarVal(6)}></div>
+      </div>
+      <div className='btn-class'>
+        <Button className='btn btn-secondary' onClick={handleAvatarSubmit}>Select</Button>
+      </div>
+      </div>}
       <div className='inner-container'>
         <div className='left-side'>
-          <Carousel className='carousel' >
-            {/* Carousel items */}
-          </Carousel>
         </div>
         <div className='right-side'>
           <h3 className='top-heading'>{loginstatus.isLogin === true ? 'LOGIN' : 'REGISTRATION'}</h3>
@@ -185,7 +215,7 @@ const Login = () => {
           ) : (
             <Form className='form' onSubmit={handleRegisterSubmit}>
               <Form.Group className="mb-3" controlId="formBasicName">
-                <Form.Label>Name</Form.Label>
+                <Form.Label>Name</Form.Label> <Button className='btn btn-avatar' onClick={openAvatar}><AccountCircleRounded /></Button>
                 <Form.Control type="text" placeholder="Enter Name" value={name} onChange={handleName} />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicEmail">

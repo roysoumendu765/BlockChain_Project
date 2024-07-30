@@ -54,11 +54,11 @@ const Header = () => {
               Contact Us
             </Link>
           </li>
-          <li className="nav-item px-2">
+          {/* <li className="nav-item px-2">
             <Link className="nav-link" to="/listfeedback">
               FeedBacks
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item px-2">
             <Link className="nav-link" to="/adminlogin">
               Admin

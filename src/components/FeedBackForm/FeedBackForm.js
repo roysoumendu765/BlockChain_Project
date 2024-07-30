@@ -14,14 +14,14 @@ const FeedBackForm = () => {
     console.log(location);
     const {data, userData} = location.state || {};
     // const userData = "edward123@gmail.com";
-    const categoryData = data[0].category;
-    const severityData = data[0].severity;
-    const dateStr = data[0].dateStr;
-    const Question = data[0].question;
-    const subQuestions = data[0].subquestions;
-    const optionalQuestions = data[0].optionalQuestions;
-    const overallExperience = data[0].overallExperience;
-    const uniqueId = data[0].uniqueId;
+    const categoryData = data.category;
+    const severityData = data.severity;
+    const dateStr = data.dateStr;
+    const Question = data.question;
+    const subQuestions = data.subquestions;
+    const optionalQuestions = data.optionalQuestions;
+    const overallExperience = data.overallExperience;
+    const uniqueId = data.uniqueId;
 
     console.log(optionalQuestions);
     console.log(userData);
@@ -37,6 +37,7 @@ const FeedBackForm = () => {
                 }
                 await window.ethereum.enable();
                 const accounts = await web3.eth.getAccounts();
+                console.log(accounts);
                 if (accounts.length === 0) {
                   throw new Error("No accounts found. Please make sure MetaMask is unlocked.");
                 }
@@ -44,6 +45,7 @@ const FeedBackForm = () => {
                   FeedBackManagement.abi,
                   FeedBackManagement.contractAddress
                 );
+                console.log(contract);
                 const response =  await contract.methods.getUniqueDetails(userData).call({from: accounts[0], gas: 300000});
                 console.log("response",response)
             } catch(error){
@@ -118,14 +120,59 @@ const FeedBackForm = () => {
         setOverallExperienceText(e.target.value);
     }
 
-    const handleSubmit = async (e) => {
-        if(subquestionRating1 == 0 || subquestionRating2 == 0 || subquestionRating3 == 0 || subquestionRating4 == 0 || subquestionRating5 == 0 || optionalRating1 == 0 || optionalRating2 == 0 || overallRating == 0 || overallExperienceText == ""){
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: `Please Fill in the Details`,
-              });
+    const getCategoryVal = (x) => {
+        if(x == "Sales feedback"){
+            return 5;
+        } else if(x == "Constructive feedback"){
+            return 8;
+        } else if(x == "Positive feedback"){
+            return 10;
+        } else if(x == "Behavioral feedback"){
+            return 7;
+        } else if(x == "Feature requests"){
+            return 6; 
+        } else if(x == "Informal feedback"){
+            return 2;
+        } else if(x == "Negative feedback"){
+            return 10;
+        } else if(x == "Net Promoter Score (NPS)"){
+            return 6;
+        } else if(x == "Customer preference feedback"){
+            return 8;
         } else {
+            return 5;
+        }
+    }
+
+    const getPriority = (x) => {
+       if(x == "High Priority"){
+        return 10;
+       } else if(x == "Medium Priority"){
+        return 7;
+       } else if(x == "Low Priority"){
+        return 3;
+       } else {
+        return 5;
+       }
+    }
+
+    const handleSubmit = async (e) => {
+        // console.log(subquestionRating1);
+        // console.log(subquestionRating2);
+        // console.log(subquestionRating3);
+        // console.log(subquestionRating4);
+        // console.log(subquestionRating5);
+        // console.log(optionalRating1);
+        // console.log(optionalRating2);
+        // console.log(overallRating);
+        // console.log(overallExperienceText)
+        // if(subquestionRating1 === 0 || subquestionRating2 === 0 || subquestionRating3 === 0 || subquestionRating4 === 0 || subquestionRating5 === 0 || optionalRating1 === 0 || optionalRating2 === 0 || overallRating === 0 || overallExperienceText === ""){
+        //     Swal.fire({
+        //         icon: "error",
+        //         title: "Error",
+        //         text: `Please Fill in the Details`,
+        //       });
+        // } else {
                 e.preventDefault();
                 try {
                   const web3 = await getWeb3();
@@ -142,21 +189,24 @@ const FeedBackForm = () => {
                     FeedBackManagement.abi,
                     FeedBackManagement.contractAddress
                   );
-                  await contract.Methods.addUniqueDetails(userData, uniqueId).send({from: accounts[0], gas: 300000})
-                  await contract.methods.addRatings(userData,Question,overallExperienceText,categoryData,severityData,averageSub,avgoptional,overallExperience).send({from: accounts[0], gas: 3000000});
-                  Swal.fire({
-                    title: "Success",
-                    text: `Feedback Submitted Successfully`,
-                    icon: "success"
-                })
-        } catch(error){
-            Swal.fire({
-                title: "Error",
-                text: `Something Went Wrong!`,
-                icon: "error"
-            })
-        }
-    }
+                    await contract.methods.addRatingsData(userData,Question,overallExperienceText,dateStr,getCategoryVal(categoryData),getPriority(severityData),parseInt(averageSub),parseInt(avgoptional),parseInt(overallRating)).send({from: accounts[0], gas: 3000000});
+                    Swal.fire({
+                        title: "Success",
+                        text: `Feedback Submitted Successfully`,
+                        icon: "success"
+                    }).then(async() => {
+                        // await contract.Methods.addReviewsData(userData, Question, dateStr, parseInt(overallRating)).send({from: accounts[0], gas: 300000})
+                    }).finally(() => {
+                        navigate('/')
+                    })
+                } catch(error){
+                    Swal.fire({
+                        title: "Error",
+                        text: `Something Went Wrong!`,
+                        icon: "error"
+                    })
+                }
+    // }
 }
 
     useEffect(() => {
@@ -168,8 +218,6 @@ const FeedBackForm = () => {
     },[subquestionRating1, subquestionRating2, subquestionRating3,subquestionRating4, subquestionRating5]);
 
     return (
-        <>
-        {data && data[0] && data[0].length > 0 ?
         <div className="feedback-main-container">   
             <div className='form-heading'>
                 FeedBack-Form
@@ -331,11 +379,7 @@ const FeedBackForm = () => {
              </div>
             <Button onClick={handleSubmit}>Submit</Button>
             </div>
-        </div> 
-        : <div className='feedback-main-container'>
-            <Button className='btn btn-primary' onClick={() => navigate('/')}>Go Back</Button>
-            </div>}
-        </>
+        </div>
     )
 }
 

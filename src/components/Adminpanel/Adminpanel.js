@@ -661,6 +661,110 @@ const Adminpanel = () => {
                     <div className='card-body'></div>
                 </div>
             </div>
+            {/* <div className='tab-panel'>
+              <ul className="nav nav-tabs" id="myTab" role="tablist">
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true" onClick={handleTabAvailable}>AVAILABLE</button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false" onClick={handleTabIncoming}>INCOMING</button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false" onClick={handleTabAttemped}>ATTEMPTED</button>
+                </li>
+              </ul>
+              <div className="tab-content" id="myTabContent">
+                <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                  {
+                    availabledata.map((val, index) => {
+                      return (
+                        <div className="available-main" key={index}>
+                          <div className='available-top'>
+                            <div className='available-top-left'>{val.question}</div>
+                            <div className='available-top-right'>
+                              <span>Dated: </span>
+                              <span>{val.dateStr}</span>
+                            </div>
+                          </div>
+                          <div className='available-bottom'>
+                            <Button className='btn btn-attempt' onClick={(e) => handleOnAvailableAttempt(e, index)}>
+                              Attempt
+                            </Button>
+                          </div> 
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+                <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                  {incomingdata.map((val, index) => {
+                    return (
+                      <div className="downtab-list" key={index}>
+                        <div className="downtab-list-top">
+                          <div className='downtab-list-top-left'>
+                            <span>Dated: </span>
+                            <span><b>{val.dateStr}</b></span>
+                          </div>
+                          <div className='downtab-list-top-right'>
+                          </div>
+                        </div>
+                        <div className="downtab-list-bottom">
+                          <div className='downtab-list-bottom-left'>
+                            <p>{val.question}</p>
+                          </div>
+                          <div className='downtab-list-bottom-right'>
+                            <StarRatings
+                              className='reviews-ratings'
+                              rating={0}
+                              starRatedColor="yellow"
+                              numberOfStars={5}
+                              starDimension="20px"
+                              starSpacing="6px"
+                              name='rate'
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                  {
+                    attempeddata.map((val, index) => {
+                      return (
+                        <div className="downtab-list" key={index}>
+                          <div className="downtab-list-top">
+                            <div className='downtab-list-top-left'>
+                              <span>Dated: </span>
+                              <span><b>{val.datestr}</b></span>
+                            </div>
+                            <div className='downtab-list-top-right'>
+                              Attempted
+                            </div>
+                          </div>
+                          <div className="downtab-list-bottom">
+                            <div className='downtab-list-bottom-left'>
+                              <p>{val.question}</p>
+                            </div>
+                            <div className='downtab-list-bottom-right'>
+                              <StarRatings
+                                className='reviews-ratings'
+                                rating={val.overallrating}
+                                starRatedColor="yellow"
+                                numberOfStars={5}
+                                starDimension="20px"
+                                starSpacing="6px"
+                                name='rate'
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+              </div>
+            </div> */}
         </div>
     )
 }
